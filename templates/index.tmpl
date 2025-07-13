@@ -1,0 +1,52 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <h1 class="mb-4 text-center">📝 My To-Do List</h1>
+
+    <!-- ADD FORM -->
+    <form method="POST" action="/add" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <input type="text" name="description" class="form-control" placeholder="Task description" required>
+        </div>
+        <div class="col-md-4">
+            <input type="date" name="deadline" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Add</button>
+        </div>
+    </form>
+
+    <!-- TASK LIST -->
+    <ul class="list-group">
+        {{range $index, $task := .tasks}}
+            <li class="list-group-item d-flex justify-content-between align-items-center {{if $task.Done}}list-group-item-success{{end}}">
+                <div>
+                    <strong>{{if $task.Done}}✅{{else}}❌{{end}} {{$task.Description}}</strong>
+                    {{if not (eq $task.Deadline.Year 1)}}
+                        <small class="text-muted"> (Due: {{$task.Deadline.Format "02 Jan 2006"}})</small>
+                    {{end}}
+                </div>
+                <div>
+                    <a href="/done/{{$index}}" class="btn btn-sm {{if $task.Done}}btn-secondary{{else}}btn-success{{end}} me-2">
+                        {{if $task.Done}}Uncheck{{else}}Done{{end}}
+                    </a>
+                    <a href="/delete/{{$index}}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </li>
+        {{else}}
+            <li class="list-group-item text-muted text-center">No tasks yet. Start adding!</li>
+        {{end}}
+    </ul>
+</div>
+
+</body>
+</html>
+{{end}}
